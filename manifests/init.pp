@@ -1,11 +1,12 @@
 class pe_external_postgresql (
-  $postgres_root_password = 'password',
-  $puppetdb_db_password   = 'password',
-  $console_db_password    = 'password',
-  $classifier_db_password = 'password',
-  $rbac_db_password       = 'password',
-  $activity_db_password   = 'password',
-  $postgresql_version     = '9.2',
+  $postgres_root_password   = 'password',
+  $puppetdb_db_password     = 'password',
+  $console_db_password      = 'password',
+  $classifier_db_password   = 'password',
+  $rbac_db_password         = 'password',
+  $activity_db_password     = 'password',
+  $orchestrator_db_password = 'password',
+  $postgresql_version       = '9.2',
 ) {
 
   class { 'postgresql::globals':
@@ -92,4 +93,12 @@ class pe_external_postgresql (
     password => postgresql_password('pe-activity', $activity_db_password ),
   }
 
+  postgresql::server::role { 'pe-orchestrator':
+    password_hash => postgresql_password('pe-orchestrator', $orchestrator_db_password ),
+  }
+
+  postgresql::server::db { 'pe-orchestrator':
+    user     => 'pe-orchestrator',
+    password => postgresql_password('pe-orchestrator', $orchestrator_db_password ),
+  }
 }
